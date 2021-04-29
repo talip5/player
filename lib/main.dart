@@ -31,23 +31,40 @@ class _MyHomePageState extends State<MyHomePage> {
   String url1='https://server1.indiryuklemp3.org/mp3_files/adca9be4cf0cc55186c07c0ba7a256b8.mp3';
   String url2='https://server1.indiryuklemp3.org/mp3_files/0d7221163c71a4d6c55a5492c4858c0f.mp3';
 
+  List liste=['https://server1.indiryuklemp3.org/mp3_files/adca9be4cf0cc55186c07c0ba7a256b8.mp3','https://server1.indiryuklemp3.org/mp3_files/0d7221163c71a4d6c55a5492c4858c0f.mp3'];
+  Duration duration;
+  Duration position;
+  AudioPlayerState playerState;
+  int currentIndex=0;
+
   @override
   void initState() {
     super.initState();
+    stateEvent();
+    completionEvent();
       }
 
   @override
   void dispose() {
-    player.dispose();
+    audioPlayer.dispose();
     super.dispose();
   }
 
-    void play1() async{
-    int result=await audioPlayer.play(url2);
+    void play2() async{
+    int result=await audioPlayer.play(liste[currentIndex]);
     //int result=await audioPlayer.play('https://server1.indiryuklemp3.org/mp3_files/0d7221163c71a4d6c55a5492c4858c0f.mp3');
     //int result=await audioPlayer.play('https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3');
     if(result==1){
-      print('success');
+      print(' Play');
+    }
+  }
+
+  void play1() async{
+    int result=await audioPlayer.play(liste[0]);
+    //int result=await audioPlayer.play('https://server1.indiryuklemp3.org/mp3_files/0d7221163c71a4d6c55a5492c4858c0f.mp3');
+    //int result=await audioPlayer.play('https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3');
+    if(result==1){
+      print(' Play');
     }
   }
 
@@ -61,15 +78,55 @@ class _MyHomePageState extends State<MyHomePage> {
   void _pauseFile() async{
     int result=await audioPlayer.pause();
     if(result==1){
-      print('Stop');
+      print('Pause');
     }
   }
 
   void seek() async{
-    int result=await audioPlayer.seek(Duration(seconds: 30));
+    int result=await audioPlayer.seek(Duration(seconds: 300));
     if(result==1){
       print('Seek');
     }
+  }
+
+  void durationEvent(){
+    audioPlayer.onDurationChanged.listen((Duration d) {
+      print('Max duration : $d');
+      /*setState(() {
+        duration=d;
+      });*/
+    });
+  }
+
+  void positionEvent(){
+    audioPlayer.onAudioPositionChanged.listen((Duration p) {
+      print('Current position : $p');
+      setState(() {
+        position=p;
+      });
+    });
+  }
+
+  void stateEvent(){
+    audioPlayer.onPlayerStateChanged.listen((AudioPlayerState state) {
+      print('Current player state : $state');
+      setState(() {
+        playerState=state;
+      });
+    });
+  }
+
+  void onComplete(){
+    print('onComplete');
+  }
+
+  void completionEvent(){
+    audioPlayer.onPlayerCompletion.listen((event) {
+      onComplete();
+      setState(() {
+        position=duration;
+      });
+    });
   }
 
   @override
@@ -135,6 +192,30 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             Padding(padding:EdgeInsets.only(left:15.0)),
+            ElevatedButton.icon(
+              onPressed:() {
+                durationEvent();
+              },
+              icon: const Icon(Icons.timer,color: Colors.black,size: 24.0),
+              label: Text('Duration Event',style: TextStyle(color: Colors.black,fontSize: 22.0),
+              ),
+            ),
+            ElevatedButton.icon(
+              onPressed:() {
+                stateEvent();
+              },
+              icon: const Icon(Icons.charging_station,color: Colors.black,size: 24.0),
+              label: Text('State Event',style: TextStyle(color: Colors.black,fontSize: 22.0),
+              ),
+            ),
+            ElevatedButton.icon(
+              onPressed:() {
+                completionEvent();
+              },
+              icon: const Icon(Icons.event,color: Colors.black,size: 24.0),
+              label: Text('Completion Event',style: TextStyle(color: Colors.black,fontSize: 22.0),
+              ),
+            ),
           ],
         ),
       ),
