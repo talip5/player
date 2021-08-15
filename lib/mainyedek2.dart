@@ -25,6 +25,8 @@ class _MyHomePageState extends State<MyHomePage> {
   AudioPlayer advancedPlayer;
   AudioCache audioCache;
   AudioPlayer player;
+  AudioCache audioCache1;
+  AudioPlayer player1;
   double rating=10;
   double rating1=20;
   String title="Player";
@@ -87,33 +89,37 @@ class _MyHomePageState extends State<MyHomePage> {
     player?.setVolume(vol);
   }
 
- Future<int> kontrol() async{
-      kont2=await player.getCurrentPosition();
-      return kont2;
+  Future<int> kontrol() async{
+    kont2=await player.getCurrentPosition();
+    return kont2;
   }
 
   void _state(){
-   print(player?.state);
-   print(AudioPlayerState);
-   var durum=AudioPlayerState.COMPLETED;
-   print(durum);
-   print(durum.runtimeType);
+    print(player?.state);
+    print(AudioPlayerState);
+    var durum=AudioPlayerState.COMPLETED;
+    print(durum);
+    print(durum.runtimeType);
   }
 
   void _state1() {
-      sarki=liste[0];
-      _playFile();
-      var state1 = player?.state;
-      if (state1 == AudioPlayerState.PLAYING) {
-        print('Playing');
-      }
-      else if (state1 == AudioPlayerState.COMPLETED) {
-        print('Completed');
-      }
-      else {
-        print(state1);
-      }
-      }
+    sarki=liste[0];
+    _playFile();
+    var state1 = player?.state;
+    if (state1 == AudioPlayerState.PLAYING) {
+      print('Playing');
+    }
+    else if (state1 == AudioPlayerState.COMPLETED) {
+      print('Completed');
+    }
+    else {
+      print(state1);
+    }
+  }
+
+  void stata2(){
+
+  }
 
   Widget ses(){
     return Slider(value: rating,
@@ -145,14 +151,21 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<String> loadString() async{
     print("deneme");
     await Future.delayed(Duration(seconds: 3));
-   return "String";
+    return "String";
   }
   void tetikleme(){
     setState(() {
 
     });
   }
-  
+
+  void sesKontrol() async{
+    print('event5');
+    await player.onPlayerCompletion.listen((event) {
+
+      print('event');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -172,18 +185,18 @@ class _MyHomePageState extends State<MyHomePage> {
                   return Center(child:Card(
                     child: ListTile(
                       title: Text(liste[index],style: TextStyle(fontSize: 25.0),),
-                   onTap: (){
+                      onTap: (){
                         setState(() {
                           sarki=liste[index];
                           _playFile();
                         });
-                   },
+                      },
                     ),
                   ));
-                  },
+                },
               ),
             ),
-           /* ElevatedButton(
+            /* ElevatedButton(
               style: ElevatedButton.styleFrom(
                 // background color
                 primary: Colors.orange,
@@ -231,20 +244,20 @@ class _MyHomePageState extends State<MyHomePage> {
             Row(
               children: [
                 Padding(padding:EdgeInsets.only(left:10.0)),
-                 Expanded(
-                   child: ElevatedButton.icon(
-                      onPressed:() {
-                        _playFile();
-                       setState(() {
-                         asenkron=asenkron;
-                       });
-                      },
-                      icon: const Icon(Icons.play_arrow,color: Colors.black,size: 24.0,),
-                      label: Text('Play',style: TextStyle(color: Colors.black,fontSize: 22.0),
-                        maxLines: 2,
-                      ),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed:() {
+                      _playFile();
+                      setState(() {
+                        asenkron=asenkron;
+                      });
+                    },
+                    icon: const Icon(Icons.play_arrow,color: Colors.black,size: 24.0,),
+                    label: Text('Play',style: TextStyle(color: Colors.black,fontSize: 22.0),
+                      maxLines: 2,
+                    ),
+                  ),
                 ),
-                 ),
                 Padding(padding:EdgeInsets.only(left:10.0)),
                 Expanded(
                   child: ElevatedButton.icon(
@@ -264,48 +277,63 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                     icon: const Icon(Icons.stop,color: Colors.black,size: 24.0),
                     label: Text('Stop',style: TextStyle(color: Colors.black,fontSize: 22.0),
+                    ),
                   ),
-                ),
                 ),
                 Padding(padding:EdgeInsets.only(left:15.0)),
               ],
             ),
             ses(),
-            ElevatedButton.icon(
-              onPressed:() {
-                _state1();
-              },
-              icon: const Icon(Icons.star,color: Colors.black,size: 24.0),
-              label: Text('State',style: TextStyle(color: Colors.black,fontSize: 22.0),
-              ),
-            ),
-            ElevatedButton.icon(
-              onPressed:() async{
-             int aktar=await kontrol();
-             print(aktar);
-             setState(() {
-               asenkron=aktar.toString();
-             });
-              },
-              icon: const Icon(Icons.code,color: Colors.black,size: 24.0),
-              label: Text('Kontrol',style: TextStyle(color: Colors.black,fontSize: 22.0),
-              ),
+            Row(
+              children: [
+                ElevatedButton.icon(
+                  onPressed:() {
+                    _state1();
+                  },
+                  icon: const Icon(Icons.star,color: Colors.black,size: 24.0),
+                  label: Text('State',style: TextStyle(color: Colors.black,fontSize: 22.0),
+                  ),
+                ),
+                ElevatedButton.icon(
+                  onPressed:() async{
+                    int aktar=await kontrol();
+                    print(aktar);
+                    setState(() {
+                      asenkron=aktar.toString();
+                    });
+                  },
+                  icon: const Icon(Icons.code,color: Colors.black,size: 24.0),
+                  label: Text('Kontrol',style: TextStyle(color: Colors.black,fontSize: 22.0),
+                  ),
+                ),
+              ],
             ),
             calmaSuresi(),
             ElevatedButton.icon(
               onPressed:() async{
-               asenkron=await loadString();
-               setState(() {
-                 asenkron=asenkron;
-               });
+                asenkron=await loadString();
+                setState(() {
+                  asenkron=asenkron;
+                });
               },
               icon: const Icon(Icons.add,color: Colors.black,size: 24.0),
               label: Text('Deneme',style: TextStyle(color: Colors.black,fontSize: 22.0),
               ),
             ),
+            ElevatedButton.icon(
+              onPressed:() async{
+                await sesKontrol();
+              },
+              icon: const Icon(Icons.surround_sound,color: Colors.black,size: 24.0),
+              label: Text('sesDurumu',style: TextStyle(color: Colors.black,fontSize: 22.0),
+              ),
+            ),
+            ElevatedButton(
+                onPressed: loadString,
+                child: Text('Load String')),
           ],
         ),
       ),
-       );
+    );
   }
 }
