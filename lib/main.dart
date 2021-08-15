@@ -133,7 +133,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget calmaSuresi(){
     return Slider(value: rating1,
 
-      min: 0,
+      min: 1,
       max: 100,
     );
   }
